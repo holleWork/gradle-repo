@@ -41,7 +41,7 @@ class AsmMethodVisitor extends MethodVisitor {
     @Override
     void visitMaxs(int maxStack, int maxLocals) {
         // 原有方法体结束标记
-        super.visitMaxs(Math.max(maxStack, 4), maxLocals + 1)
+        super.visitMaxs(Math.max(maxStack, 4), maxLocals + 3)
 
     }
     private void insertNewLogic() {

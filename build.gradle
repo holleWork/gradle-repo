@@ -1,13 +1,15 @@
 plugins {
     id 'groovy'
     id 'maven-publish'
+    id 'signing'
+//    id 'com.eastwood..maven-central-publish' version '1.2.0'
 }
 
 
 
 
 group = 'com.eastwood.tools.plugins'
-version = '1.2.2'
+version = '1.2.2.0'
 
 repositories {
     mavenCentral()
@@ -17,11 +19,11 @@ repositories {
     jcenter()
 }
 
-configurations.all {
-    resolutionStrategy {
-        force 'org.ow2.asm:asm:9.2' // 强制与AGP使用的版本一致
-    }
-}
+//configurations.all {
+//    resolutionStrategy {
+//        force 'org.ow2.asm:asm:9.2' // 强制与AGP使用的版本一致
+//    }
+//}
 
 dependencies {
     implementation gradleApi()
@@ -37,26 +39,96 @@ test {
     useJUnitPlatform()
 }
 
-//当前文件中添加 plugins { id 'maven-publish' } 后下面的内容会在输入过程中自动补全
-publishing {
-    publications {
-        create('gradle-repo', MavenPublication.class, new Action<MavenPublication>() {
-            @Override
-            void execute(MavenPublication u) {
-                //依赖引用示例：implementation 'com.example.hello:HelloPlugin:1.0.0'
-                u.groupId = group
-                u.artifactId = 'gradle-repo'
-                u.version = version
-                u.from(components['java'] as SoftwareComponent)
 
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+
+//gradlePlugin {
+//    website = 'https://github.com/yananhub/flying-gradle-plugin'
+//    vcsUrl = 'https://github.com/yananhub/flying-gradle-plugin.git'
+//    plugins {
+//        mavenCentralPublishPlugin {
+//            id = 'com.eastwood..maven-central-publish'
+//            displayName = 'Maven Central Portal Publish Plugin'
+//            description = 'A plugin that allows you to publish repositories to the Maven Central Portal (new publish process)'
+//            tags.addAll('maven', 'maven publish', 'maven central', 'maven central portal')
+//            implementationClass = 'com.eastwood.tools.plugins.repo.GradleRepoPlugin'
+//        }
+//    }
+//}
+
+publishing {
+    publications.configureEach {
+        pom {
+            name = 'Maven Central Portal Publish Plugin'
+            description = 'A plugin that allows you to publish repositories to the Maven Central Portal (new publish process)'
+            url = 'https://github.com/yananhub/flying-gradle-plugin'
+
+            licenses {
+                license {
+                    name = 'The Apache License, Version 2.0'
+                    url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                }
             }
-        })
+            developers {
+                developer {
+                    id = 'yananhub'
+                    name = 'Richard Zhang'
+                    email = 'yanandwy@163.com'
+                }
+            }
+            scm {
+                connection = 'scm:git:https://github.com/yananhub/flying-gradle-plugin.git'
+                developerConnection = 'scm:git:https://github.com/yananhub/flying-gradle-plugin.git'
+                url = 'https://github.com/yananhub/flying-gradle-plugin'
+            }
+        }
     }
-    //定义本地maven发布仓位置
+
     repositories {
         maven {
-            name  'repo'
-            url './repo'
+            name = "Local"
+            url = layout.buildDirectory.dir('repos/bundles')
         }
     }
 }
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    options.addBooleanOption('html5', true)
+}
+
+mavenCentral {
+    repoDir = layout.buildDirectory.dir('repos/bundles')
+    authToken = System.getenv('MAVEN_UPLOAD_TOKEN')
+}
+
+//当前文件中添加 plugins { id 'maven-publish' } 后下面的内容会在输入过程中自动补全
+//publishing {
+//    publications {
+//        create('gradle-repo', MavenPublication.class, new Action<MavenPublication>() {
+//            @Override
+//            void execute(MavenPublication u) {
+//                //依赖引用示例：implementation 'com.example.hello:HelloPlugin:1.0.0'
+//                u.groupId = group
+//                u.artifactId = 'gradle-repo'
+//                u.version = version
+//                u.from(components['java'] as SoftwareComponent)
+//
+//            }
+//        })
+//    }
+//    //定义本地maven发布仓位置
+//    repositories {
+//        maven {
+//            name  'repo'
+//            url './repo'
+//        }
+//    }
+//}
