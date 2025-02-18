@@ -10,7 +10,7 @@ class GradleRepoPlugin implements Plugin<Object> {
         Plugin plugin = null
         if (object instanceof Project) {
             plugin = new RepoBuildPlugin()
-            new AsmPlugin().apply(object)
+            new ASMPlugin().apply(object)
         } else if (object instanceof Settings) {
             plugin = new RepoSettingsPlugin()
         }

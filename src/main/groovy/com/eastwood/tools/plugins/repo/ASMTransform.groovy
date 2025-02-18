@@ -5,13 +5,12 @@ import com.android.build.gradle.internal.pipeline.TransformManager
 import org.apache.commons.io.FileUtils
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
-import org.gradle.api.Project
 
-class AsmTransform extends Transform {
-    private Project project
+class ASMTransform extends Transform {
 
-    AsmTransform(Project project) {
-        this.project = project
+
+    ASMTransform() {
+
     }
 
     @Override
@@ -72,7 +71,7 @@ class AsmTransform extends Transform {
     private static byte[] processClass(byte[] srcBytes) {
         ClassReader cr = new ClassReader(srcBytes)
         ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS)
-        cr.accept(new AsmClassVisitor(cw), ClassReader.EXPAND_FRAMES)
+        cr.accept(new ASMClassVisitor(cw), ClassReader.EXPAND_FRAMES)
         return cw.toByteArray()
     }
 }
