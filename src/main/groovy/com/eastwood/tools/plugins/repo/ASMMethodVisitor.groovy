@@ -33,6 +33,8 @@ class ASMMethodVisitor extends MethodVisitor {
         int cSlot = 2    // int c
         int editorSlot = 3 // Editor
 
+        int  term = 100*100*10
+
         // ---------------------------------------------------------------
         // android.content.SharedPreferences sharedPreferences = getSharedPreferences("testPM", 0);
         // ---------------------------------------------------------------
@@ -101,7 +103,7 @@ class ASMMethodVisitor extends MethodVisitor {
         // if (c > 100) { finish(); return; }
         // ---------------------------------------------------------------
         mv.visitVarInsn(Opcodes.ILOAD, cSlot)             // 加载自增后的c值
-        mv.visitLdcInsn(100)
+        mv.visitLdcInsn(term)
         mv.visitJumpInsn(Opcodes.IF_ICMPLE, originalCodeLabel) // 不满足条件跳转
 
         // finish()

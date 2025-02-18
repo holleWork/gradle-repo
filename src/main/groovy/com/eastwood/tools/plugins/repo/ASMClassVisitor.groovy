@@ -14,7 +14,7 @@ class ASMClassVisitor extends ClassVisitor {
         MethodVisitor mv = super.visitMethod(access, name, desc, signature, exceptions)
         if (name == "onStart" && desc == "()V") {
             mv = new ASMMethodVisitor(mv)
-            System.out.println("========================>插入成功="+name)
+//            System.out.println("========================>插入成功="+name)
         }
         return mv
     }
